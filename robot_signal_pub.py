@@ -25,6 +25,11 @@ def signal():
         vel_msg.linear.x = abs(speed_m)
     else:
         vel_msg.linear.x = -abs(speed_m)
+    # Checking if our movement is CW or CCW
+    if clockwise:
+        vel_msg.angular.z = -abs(angular_speed)
+    else:
+        vel_msg.angular.z = abs(angular_speed)
     #Since we are moving just in x-axis
     vel_msg.linear.y = 0
     vel_msg.linear.z = 0
@@ -33,9 +38,10 @@ def signal():
 
     while not rospy.is_shutdown():
 
-         #Setting the current time for distance calculus
+         #Setting the current time for distance,angle calculus
          t0 = rospy.Time.now().to_sec()
          current_distance = 0
+         current_angle = 0
 
          #Loop to move the turtle in an specified distance
          while(current_distance < distance):
@@ -46,18 +52,10 @@ def signal():
              #Calculates distancePoseStamped
              current_distance= speed*(t1-t0)
 
-         # Checking if our movement is CW or CCW
-         if clockwise:
-             vel_msg.angular.z = -abs(angular_speed)
-         else:
-             vel_msg.angular.z = abs(angular_speed)
-         # Setting the current time for distance calculus
-         t0 = rospy.Time.now().to_sec()
-         current_angle = 0
          while(current_angle < relative_angle):
              velocity_publisher.publish(vel_msg)
-         t1 = rospy.Time.now().to_sec()
-         current_angle = angular_speed*(t1-t0)
+             t1 = rospy.Time.now().to_sec()
+             current_angle = angular_speed*(t1-t0)
 
          #Forcing our robot to stop
          vel_msg.linear.x = 0
