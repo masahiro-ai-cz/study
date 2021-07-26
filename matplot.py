@@ -12,6 +12,9 @@ ax = fig.add_subplot(111)
 grid_num = 3
 resolution = 1
 
+#ロボットの初期座標(0~grid_num)
+x_r = 1
+y_r = 1
 #ロボットによる移動・回転
 
 
@@ -19,21 +22,16 @@ resolution = 1
 a = 1
 b = 1
 #theta = np.pi * 1/4
-#a = 0
-#b = 0
 theta = 0
-#ロボットの初期座標(0~grid_num)
-x_r = 1
-y_r = 1
 
-#0,1のindexの取り出し
+#0の行列での位置の取り出し
 ([x0,y0]) = np.where(data01 == 0 )
 #([x1,y1]) = np.where(data01 == 1)
 
 #print(len(x0))
 #print(x0,y0)
 
-#affine transformation
+#affine transformation、アフィン変換を行う
 x00 =  x0*np.cos(theta) - y0*np.sin(theta) + a
 y00 =  x0*np.sin(theta) + y0*np.cos(theta) + b
 #[x1] =  [x1*math.cos(theta) - y1*math.sin(theta) + a]
@@ -44,6 +42,7 @@ print(x00,y00)
 ax.set_xlim(-3, 3)
 ax.set_ylim(-3, 3)
 
+#下のforループで得たx1,y1からx,y座標の位置を整数型で算出しreturnで返す
 def real2grid_index_fixed_grid_num(x1, y1, resolution):
     return np.floor(x1/resolution).astype(int),\
            np.floor(y1/resolution).astype(int)
@@ -52,7 +51,7 @@ obs_map = np.zeros([grid_num, grid_num])
 
 print(len(x00))
 
-#0,1のindexの位置にそれぞれ白黒の割当を行う
+#0の位置にobstacleの割当を行う、iは0が該当した個数分ループさせる
 for i in range(len(x00)):
     x1 = x00[i]
     y1 = y00[i]
