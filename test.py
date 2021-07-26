@@ -17,6 +17,9 @@ def callback(vel_msg):
     global linear_x , angular_z
     linear_x = vel_msg.linear.x
     angular_z = vel_msg.angular.z
+    return linear_x , angular_z
+
+print(callback(vel_msg))
 
     #信号受信間隔
 #    t = 1
@@ -25,16 +28,6 @@ def callback(vel_msg):
 #    A = linear_x * t
 #    B = angular_z * t
 #    print(A,B)
-
-def xy_r():
-    def callback(vel_msg):
-        rospy.loginfo("Liner:%f",vel_msg.linear.x)
-        rospy.loginfo("angular:%f",vel_msg.angular.z)
-        global linear_x , angular_z
-        linear_x = vel_msg.linear.x
-        angular_z = vel_msg.angular.z
-        return linear_x , angular_z
-#print(xy_r())
 
 #信号受信間隔
 #t = 1
