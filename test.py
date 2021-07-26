@@ -12,6 +12,8 @@ B = 0
 def callback(vel_msg):
     rospy.loginfo("Liner:%f",vel_msg.linear.x)
     rospy.loginfo("angular:%f",vel_msg.angular.z)
+    now = rospy.get_rostime()
+    rospy.loginfo("Current time %i %i", now.secs, now.nsecs)
     global linear_x , angular_z
     linear_x = vel_msg.linear.x
     angular_z = vel_msg.angular.z
@@ -40,8 +42,8 @@ def xy_r():
 #A = linear_x * t
 #B = angular_z * t
     #環境の変位
-#    x_d = (x0-x_r)*np.cos(B) + (y0-y_r)*np.sin(B) - A*np.cos(B)
-#    y_d = -(x0-x_r)*np.sin(B) + (y0-y_r)*np.cos(B) - A*np.sin(B)
+#    x_d = ((x0-x_r)*np.cos(B) + (y0-y_r)*np.sin(B) - A*np.cos(B))/resolution
+#    y_d = (-(x0-x_r)*np.sin(B) + (y0-y_r)*np.cos(B) - A*np.sin(B))/resolution
 
 #    print(vel_msg.angular.z * 180/3.14159236)
 #print(A,B)
