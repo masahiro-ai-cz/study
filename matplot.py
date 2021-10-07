@@ -4,6 +4,7 @@ import matplotlib.pyplot as plt
 import rospy
 #from geometry_msgs.msg import Twist
 from turtlesim.msg import Pose
+from geometry_msgs.msg import Twist
 import matplotlib.animation as animation
 import time
 import collections
@@ -59,6 +60,8 @@ y_d = np.zeros([len(y0)])#.astype(int)
 x_n_idx = []
 y_n_idx = []
 
+angular_z = 0
+
 #ロボットによる移動・回転
 #def callback(vel_msg):
     #global linear_x,angular_z
@@ -71,6 +74,9 @@ def real2grid_index_fixed_grid_num(x1, y1, resolution):
     return np.floor(x1/resolution).astype(int),np.floor(y1/resolution).astype(int)
     #return round(x1/resolution),\
     #       round(y1/resolution)
+def twist_callback(vel_msg):
+    global angular_z
+    angular_z = vel_msg.angular.z
 def pose_callback(pose):
     #1回の信号での変位
     #A = linear_x * t
@@ -82,17 +88,17 @@ def pose_callback(pose):
     #global r , x_d , y_d
     pose_x = pose.x - 5.544444562
     pose_y = pose.y - 5.544444562
-    pose_theta = pose.theta
+    #pose_theta = pose.theta
     #print(pose_x,pose_y,pose_theta)
+    #print(angular_z)
     #環境の変位
     #r = np.sqrt(np.square(x0-x_r) + np.square(y0-y_r))
     #global x_d, y_d
-    pose_d_theta = pose.theta - pose_theta
     for e in range(len(x_d)):
         #環境の変位
         r[e] = np.sqrt(np.square(x0[e]-x_r) + np.square(y0[e]-y_r))
-        x_d[e] = x0[e] - pose_x #- r[e]*np.cos(pose_d_theta)
-        y_d[e] = y0[e] - pose_y #- r[e]*np.sin(pose_d_theta)
+        x_d[e] = x0[e] - pose_x #- r[e]*np.cos(np.pi/2-angular_z)
+        y_d[e] = y0[e] - pose_y #- r[e]*np.sin(angular_z)
     #print(x_d,y_d)
     def func1(lst, value_a,value_b):
         return [q for q, x in enumerate(lst) if value_a <= x <= value_b]
@@ -162,7 +168,7 @@ def pose_callback(pose):
 def listener():
     rospy.init_node('robot_cleaner' , anonymous=True)
 
-    #rospy.Subscriber("/turtle1/cmd_vel",Twist,callback)
+    rospy.Subscriber("/turtle1/cmd_vel",Twist,twist_callback)
     rospy.Subscriber("/turtle1/pose",Pose,pose_callback)
 
     #while True:
