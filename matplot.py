@@ -57,8 +57,8 @@ x_d = np.zeros([len(x0)])#.astype(int)
 y_d = np.zeros([len(y0)])#.astype(int)
 #print(x_d)
 
-x_n_idx = []
-y_n_idx = []
+#x_n_idx = []
+#y_n_idx = []
 
 angular_z = 0
 
@@ -100,10 +100,11 @@ def pose_callback(pose):
         x_d[e] = x0[e] - pose_x #- r[e]*np.cos(np.pi/2-angular_z)
         y_d[e] = y0[e] - pose_y #- r[e]*np.sin(angular_z)
     #print(x_d,y_d)
+    #print(x_d[19])
     def func1(lst, value_a,value_b):
         return [q for q, x in enumerate(lst) if value_a <= x <= value_b]
     x_idx = func1(x_d,0,grid_num-1)
-    #print(x_idx)
+    #print(x_idx[19])
     y_idx = func1(y_d,0,grid_num-1)
     #print(y_idx)
     a = x_idx + y_idx
@@ -113,11 +114,16 @@ def pose_callback(pose):
     idx = func2(a)
     #print(idx)
     global x_n_idx, y_n_idx
-    for j in idx:
+    #for j in idx:
         #print(j)
         #print(x_d[j],y_d[j])
-        x_n_idx.append(x_d[j])
-        y_n_idx.append(y_d[j])
+        #x_n_idx.append(x_d[j])
+        #y_n_idx.append(y_d[j])
+    x_n_idx = x_d[idx]
+    y_n_idx = y_d[idx]
+    #print(x_n_idx)
+
+    #print(x_n_idx[19])
     #print(x_n_idx,y_n_idx)
     #print(x_d,y_d)
     #print(len(x0))
@@ -165,6 +171,8 @@ def pose_callback(pose):
     #plt.pause(0.1)
     #ani = animation.FuncAnimation(fig, obs_map, interval = 20)
 #print(x_n_idx,y_n_idx)
+def main():
+    print(x_n_idx)
 def listener():
     rospy.init_node('robot_cleaner' , anonymous=True)
 
@@ -183,6 +191,10 @@ def listener():
     #    x1 = x00[i]
     #    y1 = y00[i]print(x_d,y_d)
     count = 0
+    #while count <= 200:
+        #print(x_n_idx)
+        #plt.pause(0.1)
+        #count += 1
     while count <= 1:
         plt.pause(0.01)
         count += 1
@@ -195,7 +207,7 @@ def listener():
         #座標の範囲内に
         #if 0 <= x2 <= grid_num-1 and 0 <= y2 <= grid_num-1:
         x_k_idx, y_k_idx = real2grid_index_fixed_grid_num(x2, y2, resolution)
-        print(x_k_idx,y_k_idx)
+        #print(x_k_idx,y_k_idx)
         obs_map[y_k_idx][x_k_idx] = 1
         #for j in range
         ax.imshow(obs_map)
@@ -218,3 +230,4 @@ def listener():
 
 if __name__=='__main__':
     listener()
+    main()
