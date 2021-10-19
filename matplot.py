@@ -29,7 +29,7 @@ pose_y = 0
 A = 0
 B = 0
 #信号受信間隔
-t = 0.024
+#t = 0.024
 #ロボットの位置、角度
 pose_x = 0
 pose_y = 0
@@ -57,23 +57,23 @@ x_d = np.zeros([len(x0)])#.astype(int)
 y_d = np.zeros([len(y0)])#.astype(int)
 #print(x_d)
 
-#x_n_idx = []
-#y_n_idx = []
+x_n_idx = []
+y_n_idx = []
 
 angular_z = 0
 
 #ロボットによる移動・回転
 #def callback(vel_msg):
     #global linear_x,angular_z
-#    linear_x = vel_msg.linear.x
-#    angular_z = vel_msg.angular.z
+    #linear_x = vel_msg.linear.x
+    #angular_z = vel_msg.angular.z
     #while not rospy.is_shutdown():
     #if linear_x == 0 and angular_z == 0:
-    #    continue
+        #continue
 def real2grid_index_fixed_grid_num(x1, y1, resolution):
     return np.floor(x1/resolution).astype(int),np.floor(y1/resolution).astype(int)
     #return round(x1/resolution),\
-    #       round(y1/resolution)
+           #round(y1/resolution)
 def twist_callback(vel_msg):
     global angular_z
     angular_z = vel_msg.angular.z
@@ -171,15 +171,16 @@ def pose_callback(pose):
     #plt.pause(0.1)
     #ani = animation.FuncAnimation(fig, obs_map, interval = 20)
 #print(x_n_idx,y_n_idx)
-def main():
-    print(x_n_idx)
 def listener():
     rospy.init_node('robot_cleaner' , anonymous=True)
 
     rospy.Subscriber("/turtle1/cmd_vel",Twist,twist_callback)
     rospy.Subscriber("/turtle1/pose",Pose,pose_callback)
 
-    #while True:
+if __name__=='__main__':
+    listener()
+
+while not rospy.is_shutdown():
     obs_map = np.zeros([grid_num, grid_num])
 
     #print(len(x00))
@@ -190,14 +191,14 @@ def listener():
 
     #    x1 = x00[i]
     #    y1 = y00[i]print(x_d,y_d)
-    count = 0
+    #count = 0
     #while count <= 200:
         #print(x_n_idx)
         #plt.pause(0.1)
         #count += 1
-    while count <= 1:
-        plt.pause(0.01)
-        count += 1
+    #while count <= 1:
+        #plt.pause(0.01)
+        #count += 1
     for i in range(len(x_n_idx)):
         #print(x_n_idx,y_n_idx)
         x2 = x_n_idx[i]
@@ -224,10 +225,6 @@ def listener():
 
     #rospy.Timer(rospy.Duration(0.1),callback)
 
-    rospy.spin()
+    #rospy.spin()
     #while not rospy.is_shutdown():
         #rospy.sleep(0.1)
-
-if __name__=='__main__':
-    listener()
-    main()
