@@ -8,6 +8,7 @@ from geometry_msgs.msg import Twist
 import matplotlib.animation as animation
 import time
 import collections
+#check
 
 data01 = np.loadtxt("./data01.txt")
 #fig = plt.figure(figsize = (6,6))
