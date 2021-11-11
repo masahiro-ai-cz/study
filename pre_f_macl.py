@@ -10,11 +10,11 @@ import matplotlib.animation as animation
 import time
 import collections
 
-data01 = np.loadtxt("./data01.txt")
+data01 = np.loadtxt("./data02.txt")
 fig, ax = plt.subplots()
 
-grid_num = 10
-resolution = 1
+grid_num = 5
+resolution = 0.5
 
 #ロボットの速度、角速度
 linear_x = 0
