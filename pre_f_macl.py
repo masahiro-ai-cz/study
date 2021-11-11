@@ -53,17 +53,21 @@ def pose_callback(pose):
   r = [np.sqrt(np.square(x0[e]-x_r) + np.square(y0[e]-y_r)) for e in range(len(x0))]
   x_d = [x0[e] - pose_x for e in range(len(x0))]
   y_d = [y0[e] - pose_y for e in range(len(x0))]
+  #mapの範囲内にある障害物のindexを調べる
   def func1(lst, value_a,value_b):
     return [q for q, x in enumerate(lst) if value_a <= x <= value_b]
   x_idx = func1(x_d,0,grid_num-1)
   y_idx = func1(y_d,0,grid_num-1)
+  #x,y両方共mapの範囲内にある障害物のindexを調べる
   a = x_idx + y_idx
   def func2(l):
     return [k for k, v in collections.Counter(l).items() if v > 1]
   idx = func2(a)
+  #該当する障害物のindexを表示
   global x_n_idx, y_n_idx
   x_n_idx = [x_d[j] for j in idx]
   y_n_idx = [y_d[j] for j in idx]
+  print(type(x_n_idx))
 
 def listener():
     rospy.init_node('robot_cleaner' , anonymous=True)
@@ -81,6 +85,7 @@ while not rospy.is_shutdown():
       x2 = x_n_idx[i]
       y2 = y_n_idx[i]
       x_k_idx, y_k_idx = real2grid_index_fixed_grid_num(x2, y2, resolution)
+      print(x_k_idx,type(x_k_idx))
       obs_map[y_k_idx][x_k_idx] = 1
       ax.imshow(obs_map)
       plt.pause(0.01)
