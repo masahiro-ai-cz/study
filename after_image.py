@@ -35,7 +35,6 @@ while not rospy.is_shutdown():
     plt.savefig("/../../デスクトップ/test/image_obs_map/obs_map/obs_map_"+r)
 
     rp = str(i-1)
-    #
     if i == 0:
         im_0 = cv2.imread("/../../デスクトップ/test/image_obs_map/obs_map/obs_map_0.png")
         bgrLower = np.array([36, 231, 253])
