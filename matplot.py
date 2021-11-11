@@ -21,11 +21,9 @@ fig, ax = plt.subplots()
 grid_num = 10
 resolution = 1
 
-#ロボットの速度、角速度、
+#ロボットの速度、角速度
 linear_x = 0
 angular_z = 0
-pose_x = 0
-pose_y = 0
 A = 0
 B = 0
 #信号受信間隔
@@ -52,15 +50,13 @@ theta = np.pi #* 1/2
 y0 = grid_num-1-y0
 #print(y0)
 
-r = np.zeros([len(x0)])
-x_d = np.zeros([len(x0)])#.astype(int)
-y_d = np.zeros([len(y0)])#.astype(int)
+#r = np.zeros([len(x0)])
+#x_d = np.zeros([len(x0)])#.astype(int)
+#y_d = np.zeros([len(y0)])#.astype(int)
 #print(x_d)
 
 x_n_idx = []
 y_n_idx = []
-
-angular_z = 0
 
 #ロボットによる移動・回転
 #def callback(vel_msg):
@@ -94,11 +90,14 @@ def pose_callback(pose):
     #環境の変位
     #r = np.sqrt(np.square(x0-x_r) + np.square(y0-y_r))
     #global x_d, y_d
-    for e in range(len(x_d)):
+    #for e in range(len(x_d)):
         #環境の変位
-        r[e] = np.sqrt(np.square(x0[e]-x_r) + np.square(y0[e]-y_r))
-        x_d[e] = x0[e] - pose_x #- r[e]*np.cos(np.pi/2-angular_z)
-        y_d[e] = y0[e] - pose_y #- r[e]*np.sin(angular_z)
+        #r[e] = np.sqrt(np.square(x0[e]-x_r) + np.square(y0[e]-y_r))
+        #x_d[e] = x0[e] - pose_x #- r[e]*np.cos(np.pi/2-angular_z)
+        #y_d[e] = y0[e] - pose_y #- r[e]*np.sin(angular_z)
+    r = [np.sqrt(np.square(x0[e]-x_r) + np.square(y0[e]-y_r)) for e in range(len(x0))]
+    x_d = [x0[e] - pose_x for e in range(len(x0))]
+    y_d = [y0[e] - pose_y for e in range(len(x0))]
     #print(x_d,y_d)
     #print(x_d[19])
     def func1(lst, value_a,value_b):
@@ -119,9 +118,11 @@ def pose_callback(pose):
         #print(x_d[j],y_d[j])
         #x_n_idx.append(x_d[j])
         #y_n_idx.append(y_d[j])
-    x_n_idx = x_d[idx]
-    y_n_idx = y_d[idx]
-    #print(x_n_idx)
+    x_n_idx = [x_d[j] for j in idx]
+    y_n_idx = [y_d[j] for j in idx]
+    #x_n_idx = x_d[idx]
+    #y_n_idx = y_d[idx]
+    print(x_n_idx)
 
     #print(x_n_idx[19])
     #print(x_n_idx,y_n_idx)
@@ -199,6 +200,9 @@ while not rospy.is_shutdown():
     #while count <= 1:
         #plt.pause(0.01)
         #count += 1
+    #x2 = [x_n_idx[i] for i in range(len(x_n_idx))]
+    #y2 = [y_n_idx[i] for i in range(len(x_n_idx))]
+
     for i in range(len(x_n_idx)):
         #print(x_n_idx,y_n_idx)
         x2 = x_n_idx[i]
