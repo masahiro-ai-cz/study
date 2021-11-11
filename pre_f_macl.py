@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 import numpy as np
 import matplotlib.pyplot as plt
@@ -41,11 +42,11 @@ y0 = grid_num-1-y0
 
 def real2grid_index_fixed_grid_num(x1, y1, resolution):
     return np.floor(x1/resolution).astype(int),np.floor(y1/resolution).astype(int)
-  
+
 def twist_callback(vel_msg):
     global angular_z
     angular_z = vel_msg.angular.z
-    
+
 def pose_callback(pose):
   pose_x = pose.x - 5.544444562
   pose_y = pose.y - 5.544444562
@@ -63,7 +64,7 @@ def pose_callback(pose):
   global x_n_idx, y_n_idx
   x_n_idx = [x_d[j] for j in idx]
   y_n_idx = [y_d[j] for j in idx]
-  
+
 def listener():
     rospy.init_node('robot_cleaner' , anonymous=True)
 
@@ -72,10 +73,10 @@ def listener():
 
 if __name__=='__main__':
     listener()
-    
+
 while not rospy.is_shutdown():
     obs_map = np.zeros([grid_num, grid_num])
-    
+
     for i in range(len(x_n_idx)):
       x2 = x_n_idx[i]
       y2 = y_n_idx[i]
