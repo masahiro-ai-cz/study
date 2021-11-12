@@ -73,7 +73,7 @@ while not rospy.is_shutdown():
         #最新画像のbgr画像を作成
         bgrLower_0 = np.array([36, 231, 253])
         bgrUpper_0 = np.array([255, 255, 255])
-        img_mask = cv2.inRange(im_n, bgrLower, bgrUpper)
+        img_mask = cv2.inRange(im_n, bgrLower_0, bgrUpper_0)
         im_nest = cv2.bitwise_and(im_n, im_n, mask=img_mask)
         before_color_5 = [36, 231, 253]
         after_color_5 = [255, 0, 0]
