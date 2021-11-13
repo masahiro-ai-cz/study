@@ -84,7 +84,7 @@ while not rospy.is_shutdown():
       #print(x_k_idx,type(x_k_idx))
       obs_map[y_k_idx][x_k_idx] = 1
       ax.imshow(obs_map)
-      r = str(k)
+      r = str(k) #数値を文字列に
       plt.savefig("../../デスクトップ/test/image_obs_map/obs_map/obs_map_pfm_"+r)
 
       rp = str(k-1)
