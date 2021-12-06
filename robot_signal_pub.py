@@ -5,12 +5,12 @@ from geometry_msgs.msg import Twist
 PI = 3.1415926535897
 #information of forward
 speed_m = 1
-distance = 12
+distance = 8
 isForward = True #True or false
 #information of rotate
-angle = 0
+angle = 180
 speed = angle * speed_m / distance
-clockwise = True #True or false
+clockwise = False #True or false
 
 def signal():
     # Starts a new node
