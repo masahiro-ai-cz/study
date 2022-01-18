@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+# -*- coding: utf-8 -*
 #################################################################################
 # Copyright 2018 ROBOTIS CO., LTD.
 #
@@ -32,6 +33,8 @@ from tensorflow.keras.models import Sequential, load_model
 from tensorflow.keras.optimizers import RMSprop
 from tensorflow.keras.layers import Flatten, Dense, Dropout, Activation, Conv2D, MaxPooling2D
 import matplotlib.pyplot as plt
+import collections
+import cv2
 
 EPISODES = 3000
 
@@ -90,16 +93,35 @@ class ReinforceAgent():
         y_idx = self.real2grid_index(np.array(scan_range_list) * np.sin(np.array(laser_angle)+np.array(yaw)),self.grid_num, self.resolution)
         y_idx = self.grid_num-1-y_idx
 
+        #print(x_idx,y_idx)
+
         def func1(lst, value_a, value_b):
           return [h for h, x in enumerate(lst) if value_a <= x <= value_b]
         x_n_idx = func1(x_idx,0,self.grid_num-1)
         y_n_idx = func1(y_idx,0,self.grid_num-1)
 
-        xy_idx = (x_n_idx+np.array(y_n_idx)*self.grid_num).astype(int)
+        #print(x_n_idx,y_n_idx)
+
+        a = x_n_idx + y_n_idx
+
+        def func2(l):
+          return [k for k, v in collections.Counter(l).items() if v > 1]
+        idx = func2(a)
+
+        #print(idx)
+
+        x_val = [x_idx[j] for j in idx]
+        y_val = [y_idx[j] for j in idx]
+
+        #print (x_val,y_val)
+
+        xy_idx = (x_val+np.array(y_val)*self.grid_num).astype(int)
+
+        #print(xy_idx)
 
         np.put(obs_map,xy_idx,1,mode='raise')
 
-        print(obs_map,type(obs_map))
+        #print(obs_map,type(obs_map))
 
         return obs_map
 
@@ -145,7 +167,7 @@ class ReinforceAgent():
             self.q_value = np.zeros(self.action_size)
             return random.randrange(self.action_size)
         else:
-            state = self.obstacle_map(state[:-2])
+            state = self.obstacle_map(state[:-2],env.yaw,env.position)
             q_value = self.model.predict(state.reshape(1, self.state_size, self.state_size, 1))
             self.q_value = q_value
             return np.argmax(q_value[0])
@@ -256,6 +278,21 @@ if __name__ == '__main__':
                 print("Please choice the show_mode !")
                 sys.exit(-1)
 
+            s = str(global_step)
+            sp = str(global_step - 1)
+            print(s,e)
+            plt.savefig("/home/mouse/catkin_ws/src/turtlebot3_machine_learning/turtlebot3_dqn/nodes/image/raw_data/tbcnn_"+s)
+            img_raw = cv2.imread("/home/mouse/catkin_ws/src/turtlebot3_machine_learning/turtlebot3_dqn/nodes/image/raw_data/tbcnn_"+s+".png")
+            img_cut = img_raw[60:310, 202:452]
+            #cv2.imwrite("/home/mouse/catkin_ws/src/turtlebot3_machine_learning/turtlebot3_dqn/nodes/image/cut_data/cut_s_tbcnn_"+s+".png", img_cut)
+            bgrLower = np.array([36, 231, 253])    # 抽出する色の下限(bgr)
+            bgrUpper = np.array([255, 255, 255])    # 抽出する色の上限(bgr)
+            img_mask = cv2.inRange(img_cut, bgrLower, bgrUpper) # bgrからマスクを作成
+            extract = cv2.bitwise_and(img_cut, img_cut, mask=img_mask)
+            before_color = [36, 231, 253]
+            after_color = [255, 0, 0]
+            extract[np.where((extract == before_color).all(axis=2))] = after_color
+            cv2.imwrite("/home/mouse/catkin_ws/src/turtlebot3_machine_learning/turtlebot3_dqn/nodes/image/rgb_data/rgb_cut_tbcnn_"+s+".png", extract)
             plt.pause(0.2)
 
             action = agent.getAction(state)
