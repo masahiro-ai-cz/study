@@ -293,6 +293,34 @@ if __name__ == '__main__':
             after_color = [255, 0, 0]
             extract[np.where((extract == before_color).all(axis=2))] = after_color
             cv2.imwrite("/home/mouse/catkin_ws/src/turtlebot3_machine_learning/turtlebot3_dqn/nodes/image/rgb_data/rgb_cut_tbcnn_"+s+".png", extract)
+
+            if x-e ==0:
+                pass
+            else:
+                im_p = cv2.imread("/home/mouse/catkin_ws/src/turtlebot3_machine_learning/turtlebot3_dqn/nodes/image/rgb_data/rgb_cut_tbcnn_" +sp +".png")
+                # 一つ前の画像に対して輝度値を1/5ずつ下げる
+                before_color_0 = [0,255,0]
+                after_color_0 = [0, 0, 0]
+                im_p[np.where((im_p == before_color_0).all(axis=2))] = after_color_0
+                before_color_1 = [51,0,0]
+                after_color_1 = [0, 0, 0]
+                im_p[np.where((im_p == before_color_1).all(axis=2))] = after_color_1
+                before_color_2 = [102,0,0]
+                after_color_2 = [51, 0, 0]
+                im_p[np.where((im_p == before_color_2).all(axis=2))] = after_color_2
+                before_color_3 = [153,0,0]
+                after_color_3 = [102, 0, 0]
+                im_p[np.where((im_p == before_color_3).all(axis=2))] = after_color_3
+                before_color_4 = [204, 0, 0]
+                after_color_4 = [153, 0, 0]
+                im_p[np.where((im_p == before_color_4).all(axis=2))] = after_color_4
+                before_color_5 = [255, 0, 0]
+                after_color_5 = [204, 0, 0]
+                im_p[np.where((im_p == before_color_5).all(axis=2))] = after_color_5
+
+                im_af = cv2.bitwise_or(im_p,extract)
+
+            x = e
             plt.pause(0.2)
 
             action = agent.getAction(state)
