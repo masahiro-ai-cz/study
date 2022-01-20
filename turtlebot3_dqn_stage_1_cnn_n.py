@@ -35,6 +35,7 @@ from tensorflow.keras.layers import Flatten, Dense, Dropout, Activation, Conv2D,
 import matplotlib.pyplot as plt
 import collections
 import cv2
+from turtlesim.msg import Pose
 
 EPISODES = 3000
 
@@ -223,12 +224,19 @@ def np_queue(src, add_data):
         dst[-1] = add_data
     return dst
 
+def pose_callback(pose):
+    global pose_x,pose_y,pose_theta
+    pose_x = pose.x 
+    pose_y = pose.y
+
 if __name__ == '__main__':
     rospy.init_node('turtlebot3_dqn_stage_1')
     pub_result = rospy.Publisher('result', Float32MultiArray, queue_size=5)
     pub_get_action = rospy.Publisher('get_action', Float32MultiArray, queue_size=5)
     result = Float32MultiArray()
     get_action = Float32MultiArray()
+
+    rospy.Subscriber("/turtle1/pose",Pose,pose_callback)
 
     # show pattern
     # grid_map, grid_pile_map, plot_map
@@ -254,6 +262,8 @@ if __name__ == '__main__':
         done = False
         state = env.reset()
         score = 0
+
+        x = 0
         for t in range(agent.episode_step):
 
             # ax.cla()
@@ -317,6 +327,8 @@ if __name__ == '__main__':
                 before_color_5 = [255, 0, 0]
                 after_color_5 = [204, 0, 0]
                 im_p[np.where((im_p == before_color_5).all(axis=2))] = after_color_5
+
+                if pose_y
 
                 im_af = cv2.bitwise_or(im_p,extract)
 
